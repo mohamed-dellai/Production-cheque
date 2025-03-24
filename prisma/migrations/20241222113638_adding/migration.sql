@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Cheque" ADD COLUMN     "typeDepapier" VARCHAR(25) NOT NULL DEFAULT 'cheque',
+ALTER COLUMN "type" SET DATA TYPE VARCHAR(25);

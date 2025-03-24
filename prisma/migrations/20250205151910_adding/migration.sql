@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "bank" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "rib" TEXT NOT NULL DEFAULT '';

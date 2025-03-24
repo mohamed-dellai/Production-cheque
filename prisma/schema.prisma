@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Subscription {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id])
+  planName         String
+  price            Float
+  billingCycle     String   @default("monthly")
+  status           String   @default("trialing") // active, canceled, past_due
+  nextBillingDate  DateTime
+  createdAt        DateTime @default(now())
+}
+
+model Payment {
+  paymentRef              String   @id 
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  amount          Float
+  paymentMethod   String   // credit_card, paypal, bank_transfer, crypto
+  status          String   @default("pending") // successful, failed
+  transactionDate DateTime @default(now())
+}
+
+model history {
+  id        String   @id @default(cuid())
+  action    String
+  timestamp DateTime @default(now())
+  accountId String
+  account   account  @relation(fields: [accountId], references: [id])
+}
+
+model account {
+  id        String    @id @default(cuid())
+  name      String    
+  email     String    @unique
+  password  String
+  auth      Int
+  userId    String
+  fcmToken  String[] @default([])
+  user      User      @relation(fields: [userId], references: [id])
+  histories history[] // An account can have multiple histories
+  cheques   Cheque[]
+}
+
+model User {
+  id       String @id @default(cuid())
+  name     String
+  email    String @unique
+  rib      String @default("")
+  bank     String @default("")
+  password String
+
+  // Relationship field
+  cheques Cheque[] // A user can have multiple cheques
+  account account[]
+  subscription  Subscription?
+  payments      Payment[]
+}
+
+model Cheque {
+  id           Int      @id @default(autoincrement())
+  type         String   @db.VarChar(25)
+  typeDepapier String   @default("cheque") @db.VarChar(25)
+  bank         String   @db.VarChar(255)
+  number       String   @unique @db.VarChar(50)
+  amount       Float
+  date         DateTime
+  beneficiary  String   @db.VarChar(255)
+  status       String   @db.VarChar(10)
+  notes        String?
+  savedAt      DateTime @default(now())
+  imageUrl     String
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  accountId    String   @default("1")
+  account      account  @relation(fields: [accountId], references: [id])
+}

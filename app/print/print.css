@@ -1,0 +1,46 @@
+/* print.css */
+
+/* Initially hide the print container on screen */
+.print-visible {
+    display: none;
+    top: 0;
+    left: 0;
+    width: 210mm;
+    height: 297mm;
+  }
+  
+  /* Set up the printed page */
+  @page {
+    size: A4 !important;
+    margin: 0 !important;
+  }
+  
+  @media print {
+    /* Hide all elements on the page by default */
+    body * {
+      visibility: hidden;
+    }
+    
+    /* Make the print container and its children visible during printing */
+    .print-visible,
+    .print-visible * {
+      visibility: visible;
+    }
+    
+    /* Force the print container to display and position it at the top left of the page */
+    .print-visible {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 210mm;
+      height: 297mm;
+    }
+  }
+  img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 176mm;
+    height: 116mm;
+  }
