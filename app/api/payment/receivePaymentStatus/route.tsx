@@ -14,12 +14,12 @@ export async function GET(request: NextRequest) {
     }
 
     const paymentDetails: any = await fetchPaymentDetails(paymentRef);
-    console.log('Payment details:', paymentDetails);
+    console.log('Payment details:', paymentDetails.payment);
     
     // Helper function to calculate next billing date
     const calculateNextBillingDate = (amount: number) => {
       const date = new Date();
-      if (amount === 35) {
+      if (amount === 35000) {
         date.setMonth(date.getMonth() + 1);
       } else {
         // Default to yearly
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
 
     // Extract subscription duration from details
     const getBillingCycle = (amount: number) => {
-      return amount === 35 ? 'monthly' : 'yearly';
+      return amount === 35000 ? 'monthly' : 'yearly';
     };
 
     // Update payment status
@@ -53,8 +53,8 @@ export async function GET(request: NextRequest) {
         },
         data: {
           status: 'active',
-          billingCycle: getBillingCycle(paymentDetails.payment.details),
-          nextBillingDate: calculateNextBillingDate(paymentDetails.payment.details),
+          billingCycle: getBillingCycle(paymentDetails.payment.amount),
+          nextBillingDate: calculateNextBillingDate(paymentDetails.payment.amount),
         },
       });
 
@@ -74,42 +74,38 @@ export async function GET(request: NextRequest) {
       success: true,
       message: 'Webhook processed successfully',
       payment: updatedPayment
-    }, { status: 200 });
+    }, { status: 200 }); 
 
   } catch (error: any) {
-    console.error('Webhook processing error:', error);
-    console.error('Webhook processing error:', error.message);
+    console.error('Webhook processing error:', error.stack);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
+
 }
 
 async function fetchPaymentDetails(paymentRef: string) {
-  const apiUrl ='https://api.sandbox.konnect.network';
+  console.log(paymentRef)
+  const apiUrl ='https://api.sandbox.konnect.network/api/v2';
   const apiKey = process.env.KONNECT_API_KEY;
 
   if (!apiKey) {
     throw new Error('Payment API key is not configured');
   }
 
-  try {
+  
     const response = await fetch(`${apiUrl}/payments/${paymentRef}`, {
       method: 'GET',
       headers: {
         'x-api-key': apiKey,
         'Accept': 'application/json',
-      },
-    });
+      }})
+   
 
   
-      console.log(`Payment API error: ${response.status} ${response.statusText}`);
 
 
-    const data = await response.json();
-    console.log('Payment details:', data);
-    return data;
-
-  } catch (error: any) {
-    console.error('Error fetching payment details:', error.message);
-    throw new Error('Failed to fetch payment details');
-  }
+    
+    return response.json();
+    
+  
 }
