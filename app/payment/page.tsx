@@ -23,7 +23,7 @@ export default function PaymentPage() {
         body: JSON.stringify({
           receiverWalletId: "67cff9f7c4277886850ba2f8",
           token: 'TND',
-          webhook: `https://nextjs-boilerplate-git-mainapp-mohamed-dellais-projects.vercel.app/api/payment/receivePaymentStatus`,  
+          webhook: `https://finflowtn.vercel.app/api/payment/receivePaymentStatus`,  
           amount: selectedPlan === 'monthly' ? 35000 : 360000,
           type: 'immediate',
           description: `Abonnement ${selectedPlan === 'monthly' ? 'mensuel' : 'annuel'} - Cheques Management`,
