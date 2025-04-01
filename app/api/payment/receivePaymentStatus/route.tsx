@@ -39,8 +39,8 @@ export async function GET(request: NextRequest) {
         status:"completed"
       }
     })
-    if(!chequePaymentProcced){
-      return NextResponse.json({ error: 'Payment déja proceed' }, { status: 404 });
+    if(chequePaymentProcced){
+      return NextResponse.json({ error: 'Payment déja proceed' }, { status: 401 });
     }
     // Update payment status
     const updatedPayment = await prisma.payment.update({
