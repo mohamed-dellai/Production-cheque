@@ -33,6 +33,15 @@ export async function GET(request: NextRequest) {
       return amount === 35000 ? 'monthly' : 'yearly';
     };
 
+    const chequePaymentProcced= await prisma.payment.findUnique({
+      where:{
+        paymentRef: paymentRef,
+        status:"completed"
+      }
+    })
+    if(!chequePaymentProcced){
+      return NextResponse.json({ error: 'Payment déja proceed' }, { status: 404 });
+    }
     // Update payment status
     const updatedPayment = await prisma.payment.update({
       where: {
@@ -44,23 +53,67 @@ export async function GET(request: NextRequest) {
         transactionDate: new Date(),
       },
     });
+     
+    
 
-    // If payment is successful, update subscription
     if (paymentDetails.payment.status === 'completed') {
-      const subscription = await prisma.subscription.update({
+      // First, try to get existing subscription
+      const existingSubscription = await prisma.subscription.findUnique({
+        where: {
+          userId: updatedPayment.userId,
+        }
+      });
+
+      // Calculate next billing date based on existing subscription or create new
+      const getNextBillingDate = (currentSubscription: any) => {
+        const today = new Date();
+        if (currentSubscription && currentSubscription.nextBillingDate > today) {
+          // If subscription exists and not expired, extend from current billing date
+          const nextDate = new Date(currentSubscription.nextBillingDate);
+          if (paymentDetails.payment.amount === 35000) {
+            nextDate.setMonth(nextDate.getMonth() + 1);
+          } else {
+            nextDate.setFullYear(nextDate.getFullYear() + 1);
+          }
+          return nextDate;
+        } else {
+          // If no subscription or expired, start from today
+          const date = new Date();
+          if (paymentDetails.payment.amount === 35000) {
+            date.setMonth(date.getMonth() + 1);
+          } else {
+            date.setFullYear(date.getFullYear() + 1);
+          }
+          return date;
+        }
+      };
+
+      const subscription = await prisma.subscription.upsert({
         where: {
           userId: updatedPayment.userId,
         },
-        data: {
+        update: {
           status: 'active',
           billingCycle: getBillingCycle(paymentDetails.payment.amount),
-          nextBillingDate: calculateNextBillingDate(paymentDetails.payment.amount),
+          nextBillingDate: getNextBillingDate(existingSubscription),
+          price: paymentDetails.payment.amount,
+          planName: 'standard'
+        },
+        create: {
+          userId: updatedPayment.userId,
+          status: 'active',
+          billingCycle: getBillingCycle(paymentDetails.payment.amount),
+          nextBillingDate: getNextBillingDate(null),
+          price: paymentDetails.payment.amount,
+          planName: 'standard'
         },
       });
 
-      console.log(`Subscription updated for user ${updatedPayment.userId}`, {
+      console.log(`Subscription upserted for user ${updatedPayment.userId}`, {
         billingCycle: subscription.billingCycle,
         nextBillingDate: subscription.nextBillingDate,
+        price: subscription.price,
+        planName: subscription.planName
       });
     }
 
