@@ -24,10 +24,10 @@ export default function PaymentPage() {
           receiverWalletId: "67cff9f7c4277886850ba2f8",
           token: 'TND',
           webhook: `https://finflowtn.vercel.app/api/payment/receivePaymentStatus`,  
-          amount: selectedPlan === 'monthly' ? 35000 : 360000,
+          amount: selectedPlan === 'monthly' ? 24000 : 240000,
           type: 'immediate',
           description: `Abonnement ${selectedPlan === 'monthly' ? 'mensuel' : 'annuel'} - Cheques Management`,
-          acceptedPaymentMethods: ['wallet', 'bank_card', 'e-DINAR'],
+          acceptedPaymentMethods: ['bank_card', 'e-DINAR'],
           lifespan: 30,
           checkoutForm: true,
           addPaymentFeesToAmount: false,
@@ -38,7 +38,6 @@ export default function PaymentPage() {
         })
       });
       var konnectData = await konnectResponse.json();
-      console.error(konnectData);
     }
     catch(e){
       console.error(e);
@@ -48,7 +47,7 @@ export default function PaymentPage() {
       // Save payment details to our database
       const { data: savePaymentResponse } = await axios.post('/api/payment/initPaymen', {
         paymentRef: konnectData.paymentRef,
-        amount: selectedPlan === 'monthly' ? 35 : 360,
+        amount: selectedPlan === 'monthly' ? 24000 : 240000,
       });
 
       console.log(savePaymentResponse)
@@ -116,9 +115,9 @@ export default function PaymentPage() {
               >
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Abonnement Mensuel</h3>
                 <div className="text-4xl font-bold text-indigo-600 mb-4">
-                  35 <span className="text-lg font-normal">DT/mois</span>
+                  24 <span className="text-lg font-normal">DT/mois</span>
                 </div>
-                <p className="text-gray-600 mb-6">Facturation mensuelle, annulation à tout moment</p>
+                <p className="text-gray-600 mb-6">Facturation mensuelle</p>
                 <ul className="space-y-3 mb-8 text-left">
                   {[
                     "Accès à toutes les fonctionnalités",
@@ -148,11 +147,11 @@ export default function PaymentPage() {
                 }`}
               >
                 <div className="bg-green-100 text-green-800 text-xs font-medium px-3 py-1 rounded-full inline-block mb-3">
-                  ÉCONOMISEZ 60 DT
+                  ÉCONOMISEZ 48 DT
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Abonnement Annuel</h3>
                 <div className="text-4xl font-bold text-indigo-600 mb-4">
-                  360 <span className="text-lg font-normal">DT/an</span>
+                  240 <span className="text-lg font-normal">DT/an</span>
                 </div>
                 <p className="text-gray-600 mb-6">Facturation annuelle, 2 mois gratuits</p>
                 <ul className="space-y-3 mb-8 text-left">

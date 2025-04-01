@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     // Helper function to calculate next billing date
     const calculateNextBillingDate = (amount: number) => {
       const date = new Date();
-      if (amount === 35000) {
+      if (amount === 24000) {
         date.setMonth(date.getMonth() + 1);
       } else {
         // Default to yearly
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
 
     // Extract subscription duration from details
     const getBillingCycle = (amount: number) => {
-      return amount === 35000 ? 'monthly' : 'yearly';
+      return amount === 24000 ? 'monthly' : 'yearly';
     };
 
     const chequePaymentProcced= await prisma.payment.findUnique({
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
         if (currentSubscription && currentSubscription.nextBillingDate > today) {
           // If subscription exists and not expired, extend from current billing date
           const nextDate = new Date(currentSubscription.nextBillingDate);
-          if (paymentDetails.payment.amount === 35000) {
+          if (paymentDetails.payment.amount === 24000) {
             nextDate.setMonth(nextDate.getMonth() + 1);
           } else {
             nextDate.setFullYear(nextDate.getFullYear() + 1);
@@ -79,7 +79,7 @@ export async function GET(request: NextRequest) {
         } else {
           // If no subscription or expired, start from today
           const date = new Date();
-          if (paymentDetails.payment.amount === 35000) {
+          if (paymentDetails.payment.amount === 24000) {
             date.setMonth(date.getMonth() + 1);
           } else {
             date.setFullYear(date.getFullYear() + 1);
@@ -109,29 +109,13 @@ export async function GET(request: NextRequest) {
         },
       });
 
-      console.log(`Subscription upserted for user ${updatedPayment.userId}`, {
-        billingCycle: subscription.billingCycle,
-        nextBillingDate: subscription.nextBillingDate,
-        price: subscription.price,
-        planName: subscription.planName
-      });
     }
 
-    console.log(`Webhook received for payment ${paymentRef}`, {
-      status: paymentDetails.payment.status,
-      timestamp: new Date().toISOString(),
-      details: paymentDetails.payment.details,
-    });
-
-    return NextResponse.json({
-      success: true,
-      message: 'Webhook processed successfully',
-      payment: updatedPayment
-    }, { status: 200 }); 
+    return NextResponse.redirect('/payment/success', 302);
 
   } catch (error: any) {
     console.error('Webhook processing error:', error.stack);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.redirect('/payment/failure', 302);
   }
 
 }
