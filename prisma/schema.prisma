@@ -38,16 +38,17 @@ model history {
 }
 
 model account {
-  id        String    @id @default(cuid())
-  name      String    
-  email     String    @unique
-  password  String
-  auth      Int
-  userId    String
-  fcmToken  String[] @default([])
-  user      User      @relation(fields: [userId], references: [id])
-  histories history[] // An account can have multiple histories
-  cheques   Cheque[]
+  id                String    @id @default(cuid())
+  name              String    
+  email             String    @unique
+  password          String
+  auth              Int
+  userId            String
+  fcmToken          String[]  @default([])
+  user              User      @relation(fields: [userId], references: [id])
+  histories         history[] // An account can have multiple histories
+  cheques           Cheque[]
+  verified          Boolean   @default(false)
 }
 
 model User {

@@ -27,6 +27,10 @@ export async function POST(request) {
         return NextResponse.json({ error: "Account not found" }, { status: 404 });
       }
 
+      if (!account.verified) {
+        return NextResponse.json({ error: "Veuillez vérifier votre adresse email avant de vous connecter." }, { status: 401 });
+      }
+
       if (account.password !== password) {
         return NextResponse.json({ error: "Invalid password" }, { status: 401 });
       }

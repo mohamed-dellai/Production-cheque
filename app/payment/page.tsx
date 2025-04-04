@@ -1,14 +1,35 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { ArrowRight, Check, ExternalLink } from "lucide-react"
+import { ArrowRight, Check, ExternalLink, AlertCircle, Clock } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import axios from "axios"
+
 export default function PaymentPage() {
   const [selectedPlan, setSelectedPlan] = useState<"monthly" | "yearly">("monthly")
   const [isRedirecting, setIsRedirecting] = useState(false)
+  const [subscriptionInfo, setSubscriptionInfo] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Fetch subscription status when the component mounts
+  useEffect(() => {
+    async function checkSubscription() {
+      try {
+        setIsLoading(true)
+        const response = await axios.get('/api/subscription/check')
+        console.log('Subscription data:', response.data)
+        setSubscriptionInfo(response.data)
+      } catch (error) {
+        console.error('Error checking subscription:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    checkSubscription()
+  }, [])
 
   const handleProceedToPayment = async () => {
     setIsRedirecting(true);
@@ -61,6 +82,80 @@ export default function PaymentPage() {
     }
   }
 
+  // Render subscription status section
+  const renderSubscriptionStatus = () => {
+    if (isLoading) {
+      return (
+        <div className="bg-gray-100 rounded-lg p-4 mb-8 animate-pulse">
+          <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+        </div>
+      );
+    }
+
+    if (!subscriptionInfo) {
+      return (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
+          <div className="flex items-start">
+            <AlertCircle className="h-5 w-5 text-yellow-500 mr-2 mt-0.5" />
+            <div>
+              <h3 className="font-medium text-yellow-800">Aucune information d'abonnement</h3>
+              <p className="text-sm text-yellow-700">Nous n'avons pas pu récupérer les informations de votre abonnement.</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const isExpired = !subscriptionInfo.valid;
+    const formattedDate = subscriptionInfo.nextBillingDate 
+      ? new Date(subscriptionInfo.nextBillingDate).toLocaleDateString('tn-TN', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        })
+      : '';
+
+    if (isExpired) {
+      return (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
+          <div className="flex items-start">
+            <AlertCircle className="h-6 w-6 text-red-500 mr-3 mt-0.5" />
+            <div>
+              <h3 className="font-semibold text-red-800 text-lg">Votre abonnement a expiré</h3>
+              <p className="text-red-700 mt-1">
+                Votre abonnement a expiré le {formattedDate}. Veuillez renouveler votre abonnement pour continuer à utiliser toutes les fonctionnalités.
+              </p>
+              <div className="mt-4 inline-flex items-center px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
+                Action requise : Renouveler maintenant
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-8">
+        <div className="flex items-start">
+          <Clock className="h-6 w-6 text-green-500 mr-3 mt-0.5" />
+          <div>
+            <h3 className="font-semibold text-green-800 text-lg">Votre abonnement est actif</h3>
+            <p className="text-green-700 mt-1">
+              Plan : <span className="font-medium">{subscriptionInfo.planName}</span> | 
+              Expiration : <span className="font-medium">{formattedDate}</span>
+            </p>
+            {subscriptionInfo.daysRemaining > 0 && (
+              <div className="mt-4 inline-flex items-center px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                {subscriptionInfo.daysRemaining} {subscriptionInfo.daysRemaining > 1 ? 'jours' : 'jour'} restants
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
@@ -74,6 +169,9 @@ export default function PaymentPage() {
             Accédez à toutes les fonctionnalités premium et optimisez la gestion de vos finances
           </p>
         </div>
+
+        {/* Subscription Status Section */}
+        {renderSubscriptionStatus()}
 
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-12">
           <div className="p-8 text-center">
@@ -204,7 +302,9 @@ export default function PaymentPage() {
                   </span>
                 ) : (
                   <span className="flex items-center">
-                    Procéder au paiement de {selectedPlan === "monthly" ? "35 DT" : "360 DT"}
+                    {subscriptionInfo?.valid 
+                      ? "Renouveler mon abonnement" 
+                      : "Réactiver mon abonnement"}
                     <ExternalLink className="ml-2 h-5 w-5" />
                   </span>
                 )}

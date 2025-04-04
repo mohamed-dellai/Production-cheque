@@ -195,7 +195,7 @@ export function ElementCheque({ cheque, onUpdate, viewMode, isOverdue }: Element
             </p>
           )}
         </div>
-        <div className="mt-4 flex justify-between items-center">
+        <div className="mt-4 flex items-center" style={{flexWrap: "wrap"}}>
           <button onClick={() => setShowImage(true)} className="text-indigo-600 hover:text-indigo-800 font-medium">
             Voir l'image
           </button>
@@ -216,7 +216,7 @@ export function ElementCheque({ cheque, onUpdate, viewMode, isOverdue }: Element
               </>
             )}
           </button>
-          <Button variant="destructive" size="sm" onClick={handleDelete} disabled={isDeleting}>
+          <Button variant="destructive" size="sm" style={{marginLeft: "0.8em"}} onClick={handleDelete} disabled={isDeleting}>
             {isDeleting ? <Spinner className="mr-2" /> : <Trash2 className="w-4 h-4 mr-1" />}
             Supprimer
           </Button>

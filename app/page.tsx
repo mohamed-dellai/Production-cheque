@@ -265,13 +265,23 @@ export default function Accueil() {
             <ul>
               <li className="mb-2">
                 <Link href="/print" className="text-indigo-600 hover:text-indigo-800">
-                  Imprimer
+                  Imprimer les traites
                 </Link>
               </li>
-              <li className="mb-2">
+              {/* <li className="mb-2">
                 <button onClick={handlePredictionClick} className="text-indigo-600 hover:text-indigo-800">
                   Prediction
                 </button>
+              </li> */}
+              <li className="mb-2">
+                <Link href="/payment" className="text-indigo-600 hover:text-indigo-800">
+                  Payment et subscription
+                </Link>
+              </li>
+              <li className="mb-2">
+                <Link href="/settings" className="text-indigo-600 hover:text-indigo-800">
+                  Paramétres
+                </Link>
               </li>
               <li className="mb-2">
                 <button

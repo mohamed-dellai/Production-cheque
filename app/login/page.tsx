@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Eye, EyeOff, Lock, Mail, ArrowRight } from 'lucide-react'
 import axios from 'axios'
 import { requestForToken } from '@/utils/firebase'
+import Link from 'next/link'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -130,9 +131,9 @@ export default function LoginPage() {
             </div>
 
             <div className="text-sm">
-              <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                Mot de pass oubliée?
-              </a>
+              <Link href="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+              Créer un compte
+              </Link>
             </div>
           </div>
 

@@ -110,14 +110,11 @@ export async function GET(request: NextRequest) {
       });
 
     }
-
     return NextResponse.redirect('/payment/success', 302);
-
   } catch (error: any) {
-    console.error('Webhook processing error:', error.stack);
+    console.error('Webhook processing error:', error.message);
     return NextResponse.redirect('/payment/failure', 302);
   }
-
 }
 
 async function fetchPaymentDetails(paymentRef: string) {
