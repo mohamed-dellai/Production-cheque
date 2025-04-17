@@ -26,7 +26,23 @@ export default function Accueil() {
   const [totalAPayer, setTotalAPayer] = useState(0)
   const [totalARecevoir, setTotalARecevoir] = useState(0)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [companyName, setCompanyName] = useState("Chargement...")
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchCompanyInfo = async () => {
+      try {
+        const response = await axios.get("/api/getSocieteInfo");
+        if (response.data && response.data.name) {
+          setCompanyName(response.data.name);
+        }
+      } catch (error) {
+        console.error("Failed to fetch company info:", error);
+      }
+    };
+
+    fetchCompanyInfo();
+  }, []);
 
   useEffect(() => {
     if (cheques.length !== 0) {
@@ -100,7 +116,6 @@ export default function Accueil() {
       try {
         if(capturedCheque.typeDepapier==="espece")
           capturedCheque.status="encaisse"
-        
         const response = await axios.post("/api/cheque", capturedCheque)
         setCheques((prevCheques) => [...prevCheques, response.data])
         setCapturedCheque(null)
@@ -159,7 +174,7 @@ export default function Accueil() {
       )}
 
       <header className="bg-indigo-600 text-white p-4 shadow-md">
-        <h1 className="text-2xl font-bold">STE SMART STEP CONTROL</h1>
+        <h1 className="text-2xl font-bold">{companyName}</h1>
       </header>
 
       <div className="container mx-auto px-4 py-6">

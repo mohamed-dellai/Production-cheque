@@ -4,7 +4,7 @@ import type React from "react"
 
 import { deleteImageFromFirebase } from "@/utils/uploadImgae"
 import type { Cheque, ChequeType, chequeOuqb } from "@/types/cheque"
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import { compressImage } from "../utils/compression"
 import { saveImageToFirebase } from "../utils/uploadImgae"
 interface PopUpAddPaylentProps {
@@ -12,7 +12,7 @@ interface PopUpAddPaylentProps {
   setCapturedCheque: React.Dispatch<React.SetStateAction<Omit<Cheque, "id"> | null>>
   setIsSaving: React.Dispatch<React.SetStateAction<boolean>>
   isSaving: boolean
-  onSave: () => void
+  onSave: (url?: string) => void
 }
 
 export function PopUpAddPaylent({
@@ -25,11 +25,19 @@ export function PopUpAddPaylent({
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [imageData, setImage] = useState<Blob | null>(null)
   const confirm=async()=>{
+    if(capturedCheque.imageUrl!=="")
+    {
+      onSave()
+      return
+    }
+
     var url=""
-    if(imageData!==null) 
-      url= await saveImageToFirebase(imageData)
-    
-    setCapturedCheque({ ...capturedCheque, imageUrl: url })
+    setIsSaving(true)
+    if (imageData!==null) {
+      url = await saveImageToFirebase(imageData);
+    }
+
+    capturedCheque.imageUrl=url
     onSave()
   }
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,6 +54,10 @@ export function PopUpAddPaylent({
       console.log(e)
     }
   }
+
+  useEffect(() => {
+    console.log("Updated capturedCheque:", capturedCheque);
+  }, [capturedCheque]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -143,7 +155,7 @@ export function PopUpAddPaylent({
             />
           </div>
 
-          <div style={{display: (capturedCheque.imageUrl===null || capturedCheque.number==="")? "block": "none"	}} className="mt-6">
+          <div style={{display: capturedCheque.imageUrl===""? "block": "none"	}} className="mt-6">
             <button
               onClick={() => fileInputRef.current?.click()}
               className="w-full bg-indigo-600 text-white hover:bg-indigo-700 font-semibold py-3 px-4 rounded-md flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-105"

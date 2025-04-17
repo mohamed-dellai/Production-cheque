@@ -26,7 +26,7 @@ export function CaptureCheque({ onCapture }: CaptureChequeProps) {
     beneficiary: '',
     status: 'en-attente',
     savedAt: new Date().toISOString(),
-    imageUrl: '',
+    imageUrl: "",
     typeDepapier: "kimbielle"
   });
   const buttonRef = useRef<HTMLButtonElement>(null);

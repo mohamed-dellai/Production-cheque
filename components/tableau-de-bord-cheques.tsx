@@ -24,7 +24,7 @@ export function TableauDeBordCheques({ type, cheques, onUpdateCheque }: TableauD
   const [sortOrder, setSortOrder] = useState<SortOrder>(null)
   const [sortedCheques, setSortedCheques] = useState<Cheque[]>([])
 
-  const titre = type === "a-payer" ? "Chèques à Payer" : "Chèques à Recevoir"
+  const titre = type === "a-payer" ? "à Payer" : "à Recevoir"
 
   const appliquerFiltres = (filtres: any) => {
     setFiltresActifs(filtres)

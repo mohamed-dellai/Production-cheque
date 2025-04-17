@@ -15,7 +15,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User not authenticated' }, { status: 401 });
     }
 
-
+    console.log('Creating cheque for user:', userId.value, 'with account ID:', accountId.value);
+    console.log('Cheque data:', body);
     const chequeData = {
       ...body,
       userId: userId.value,

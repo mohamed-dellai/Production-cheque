@@ -21,6 +21,7 @@ export async function GET(request,response){
     }
     
     catch(error){
+        console.log(error.stack);
         return NextResponse.json({error: 'Server error'},{status:500});
     }
 }
