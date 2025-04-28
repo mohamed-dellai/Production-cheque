@@ -93,7 +93,7 @@ export function CaptureCheque({ onCapture }: CaptureChequeProps) {
   return (
     <div className="w-full max-w-md mx-auto bg-gradient-to-br from-indigo-500 to-indigo-700 text-white shadow-xl rounded-lg overflow-hidden">
       <div className="p-6">
-        <h2 className="text-2xl font-bold mb-4">Capturer un Chèque</h2>
+        <h2 className="text-2xl font-bold mb-4">Capturer</h2>
         <div className="space-y-4">
           <select
             value={chequeType}
