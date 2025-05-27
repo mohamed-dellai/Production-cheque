@@ -179,13 +179,23 @@ export async function GET(request: NextRequest) {
     }
 
     const processingTime = Date.now() - startTime;
-    logWebhookEvent('info', 'Webhook processed successfully', { 
-      paymentRef, 
-      status: paymentDetails.payment.status,
-      processingTime: `${processingTime}ms` 
-    });
-    
-    return NextResponse.redirect(new URL('/payment/success', request.url), 302);
+    if (paymentDetails.payment.status === 'completed') {
+      logWebhookEvent('info', 'Webhook processed successfully (completed)', { 
+        paymentRef, 
+        status: paymentDetails.payment.status,
+        processingTime: `${processingTime}ms` 
+      });
+      return NextResponse.redirect(new URL('/payment/success', request.url), 302);
+    } else {
+      logWebhookEvent('info', 'Webhook processed (payment not completed)', { 
+        paymentRef, 
+        status: paymentDetails.payment.status,
+        processingTime: `${processingTime}ms` 
+      });
+      // Redirect to failure if payment is not completed, unless it was a non-completed status we still want to acknowledge
+      // For now, any status other than 'completed' will redirect to failure if not handled by idempotency.
+      return NextResponse.redirect(new URL('/payment/failure', request.url), 302);
+    }
   } catch (error: any) {
     const processingTime = Date.now() - startTime;
     logWebhookEvent('error', 'Webhook processing failed', { 
