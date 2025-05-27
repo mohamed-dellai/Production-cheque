@@ -1,6 +1,6 @@
 export type ChequeType = 'a-payer' | 'a-recevoir';
 
-export type ChequeStatus = 'en-attente' | 'encaisse' | 'a-deposer';
+export type ChequeStatus = 'en-attente' | 'encaisse' | 'a-deposer' | 'rejete';
 export type chequeOuqb= 'cheque' | 'kimbielle' | 'espece';
 export interface Cheque {
   id: number;

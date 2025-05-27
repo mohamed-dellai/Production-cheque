@@ -29,7 +29,7 @@ export function ModalEditionCheque({ cheque, onSave }: ModalEditionChequeProps) 
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4" style={{zIndex:"1278557"}}>
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
         <div className="p-6">
           <h2 className="text-2xl font-bold text-slate-800 mb-4">Éditer le Chèque</h2>
@@ -93,7 +93,7 @@ export function ModalEditionCheque({ cheque, onSave }: ModalEditionChequeProps) 
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               >
                 <option value="cheque">Cheque</option>
-                <option value="kimbielle">Kimbielle</option>
+                <option value="kimbielle">Traite</option>
                 <option value="espece">Espéce</option>
               </select>
 
@@ -105,6 +105,7 @@ export function ModalEditionCheque({ cheque, onSave }: ModalEditionChequeProps) 
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               >
                 <option value="en-attente">En Attente</option>
+                <option value="rejete">Rejeté</option>
                 <option value="encaisse">Encaissé</option>
                 <option value="a-deposer">À Déposer</option>
               </select>

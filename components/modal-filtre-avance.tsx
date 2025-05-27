@@ -135,15 +135,15 @@ export function ModalFiltreAvance({ type, appliquerFiltres, cheques }: ModalFilt
           <div className="flex flex-col space-y-1.5">
             <Label>Statut</Label>
             <div className="flex space-x-4">
-              {["en-attente", "encaisse", "a-deposer"].map((status) => (
-                <div key={status} className="flex items-center space-x-2">
+              {["en-attente", "encaisse", "a-deposer", "rejete"].map((status) => (
+                <div key={status} className="space-x-1">
                   <Checkbox
                     id={status}
                     checked={filtres.statuts.includes(status as ChequeStatus)}
                     onCheckedChange={() => handleCheckboxChange(status as ChequeStatus)}
                   />
                   <label htmlFor={status}>
-                    {status === "en-attente" ? "En Attente" : status === "encaisse" ? "Encaissé" : "À Déposer"}
+                    <p>{status === "en-attente" ? "En Attente" : status === "encaisse" ? "Encaissé" : status === "a-deposer" ? "À Déposer" : "Rejeté"}</p>
                   </label>
                 </div>
               ))}

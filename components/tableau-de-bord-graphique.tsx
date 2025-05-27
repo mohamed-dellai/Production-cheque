@@ -39,7 +39,7 @@ export function TableauDeBordGraphique({ cheques }: TableauDeBordGraphiqueProps)
     acc[moisAnnee] = (acc[moisAnnee] || 0) + cheque.amount
     return acc
   }, {} as Record<string, number>)
-  const montantParMoisEnAttente = filteredCheques.filter(cheque=> cheque.status==="en-attente").reduce((acc, cheque) => {
+  const montantParMoisEnAttente = filteredCheques.filter(cheque=> cheque.status!=="encaisse").reduce((acc, cheque) => {
    
     const date = new Date(cheque.date)
     const moisAnnee = `${date.getMonth() + 1}/${date.getFullYear()}`
@@ -57,7 +57,7 @@ export function TableauDeBordGraphique({ cheques }: TableauDeBordGraphiqueProps)
       montant
     })),
     statuts: Object.entries(chequesParStatut).map(([status, count]) => ({
-      name: status === 'en-attente' ? 'En Attente' : status === 'encaisse' ? 'Encaissé' : 'À Déposer',
+      name: status === 'en-attente' ? 'En Attente' : status === 'encaisse' ? 'Encaissé' : status === 'a-deposer' ? 'À Déposer' : 'Rejeté',
       value: count
     })),
     mois: Object.entries(montantParMois)

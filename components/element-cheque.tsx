@@ -9,6 +9,69 @@ import { Eye, EyeOff, Trash2 } from "lucide-react"
 import { Spinner } from "@/components/ui/spinner"
 import { Button } from "@/components/ui/button"
 import { deleteImageFromFirebase } from "@/utils/uploadImgae"
+
+// Helper functions for styling
+interface StatusDisplayInfo {
+  bgColor: string;
+  textColor: string;
+  text: string;
+}
+
+interface StatusStyle extends StatusDisplayInfo {
+  cardBgGradient: string;
+}
+
+function getStatusStyles(status: Cheque['status'], isOverdue: boolean): StatusStyle {
+  let displayInfo: StatusDisplayInfo;
+  // Default card background, overridden if overdue or specific status like 'rejete'
+  let cardBgGradient = "from-indigo-500 to-indigo-700"; 
+
+  switch (status) {
+    case "en-attente":
+      if (isOverdue) {
+        displayInfo = { bgColor: "bg-red-500", textColor: "text-white", text: "En retard" };
+        cardBgGradient = "from-red-500 to-red-700"; // Overdue is red
+      } else {
+        displayInfo = { bgColor: "bg-yellow-500", textColor: "text-white", text: "En Attente" };
+        // cardBgGradient remains default indigo for non-overdue 'en-attente'
+      }
+      break;
+    case "encaisse":
+      displayInfo = { bgColor: "bg-green-500", textColor: "text-white", text: "Encaissé" };
+      // cardBgGradient remains default indigo for 'encaisse'
+      break;
+    case "rejete":
+      displayInfo = { bgColor: "bg-red-700", textColor: "text-white", text: "Rejeté" };
+      cardBgGradient = "from-red-500 to-red-700"; // 'rejete' is always red card background
+      break;
+    default: // Covers 'a-deposer' and any other unspecified status
+      displayInfo = { bgColor: "bg-blue-500", textColor: "text-white", text: "À Déposer" };
+      // cardBgGradient remains default indigo for 'a-deposer'
+      break;
+  }
+  // Ensure any generally overdue cheque (not just specific statuses like 'rejete') also gets a red card background
+  if (isOverdue && status !== 'rejete') { // 'rejete' already sets its card to red
+    cardBgGradient = "from-red-500 to-red-700";
+  }
+
+  return { ...displayInfo, cardBgGradient };
+}
+
+interface TypeStyle {
+  bgColor: string;
+  textColor: string;
+  text: string;
+}
+
+function getTypeStyles(type: Cheque['type']): TypeStyle {
+  if (type === "a-payer") {
+    return { bgColor: "bg-red-500", textColor: "text-white", text: "À Payer" };
+  }
+  // Default for "a-recevoir" or other types
+  return { bgColor: "bg-green-500", textColor: "text-white", text: "À Recevoir" }; 
+}
+// End Helper functions
+
 interface ElementChequeProps {
   cheque: Cheque
   onUpdate: (updatedCheque: Cheque) => void
@@ -17,6 +80,8 @@ interface ElementChequeProps {
 }
 
 export function ElementCheque({ cheque, onUpdate, viewMode, isOverdue }: ElementChequeProps) {
+  const statusStyles = getStatusStyles(cheque.status, isOverdue);
+  const typeStyles = getTypeStyles(cheque.type);
   const [showImage, setShowImage] = useState(false)
   const [showSaved, setShowSaved] = useState(false)
   interface AccountInfo {
@@ -29,7 +94,7 @@ export function ElementCheque({ cheque, onUpdate, viewMode, isOverdue }: Element
   const [isDeleting, setIsDeleting] = useState(false)
 
   const overdueClass = isOverdue ? "border-l-4 border-red-500" : ""
-
+  
   const fetchAccountInfo = async () => {
     if (showSaved) {
       setShowSaved(false)
@@ -84,23 +149,9 @@ export function ElementCheque({ cheque, onUpdate, viewMode, isOverdue }: Element
         </div>
         <div className="flex items-center space-x-2">
           <span
-            className={`px-2 py-1 rounded-full text-xs font-semibold ${
-              cheque.status === "en-attente"
-                ? isOverdue
-                  ? "bg-red-500 text-white"
-                  : "bg-yellow-500 text-white"
-                : cheque.status === "encaisse"
-                  ? "bg-green-500 text-white"
-                  : "bg-blue-500 text-white"
-            }`}
+              className={`px-2 py-1 rounded-full text-xs font-semibold ${statusStyles.bgColor} ${statusStyles.textColor}`}
           >
-            {cheque.status === "en-attente"
-              ? isOverdue
-                ? "En retard"
-                : "En Attente"
-              : cheque.status === "encaisse"
-                ? "Encaissé"
-                : "À Déposer"}
+            {statusStyles.text}
           </span>
           <ModalEditionCheque cheque={cheque} onSave={onUpdate} />
           <button
@@ -131,9 +182,7 @@ export function ElementCheque({ cheque, onUpdate, viewMode, isOverdue }: Element
   return (
     <div className={`mb-4 overflow-hidden bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-lg ${overdueClass}`}>
       <div
-        className={`bg-gradient-to-r ${
-          isOverdue ? "from-red-500 to-red-700" : "from-indigo-500 to-indigo-700"
-        } text-white p-4`}
+        className={`bg-gradient-to-r ${statusStyles.cardBgGradient} text-white p-4`}
       >
         <h3 className="text-lg">
           <span className="truncate font-semibold">
@@ -141,30 +190,14 @@ export function ElementCheque({ cheque, onUpdate, viewMode, isOverdue }: Element
           </span>
           <div className="flex space-x-2">
             <span
-              className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                cheque.type === "a-payer" ? "bg-red-500" : "bg-green-500"
-              }`}
+              className={`px-2 py-1 rounded-full text-xs font-semibold ${typeStyles.bgColor} ${typeStyles.textColor}`}
             >
-              {cheque.type === "a-payer" ? "À Payer" : "À Recevoir"}
+              {typeStyles.text}
             </span>
             <span
-              className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                cheque.status === "en-attente"
-                  ? isOverdue
-                    ? "bg-red-500"
-                    : "bg-yellow-500"
-                  : cheque.status === "encaisse"
-                    ? "bg-green-500"
-                    : "bg-blue-500"
-              }`}
+              className={`px-2 py-1 rounded-full text-xs font-semibold ${statusStyles.bgColor} ${statusStyles.textColor}`}
             >
-              {cheque.status === "en-attente"
-                ? isOverdue
-                  ? "En retard"
-                  : "En Attente"
-                : cheque.status === "encaisse"
-                  ? "Encaissé"
-                  : "À Déposer"}
+              {statusStyles.text}
             </span>
           </div>
         </h3>

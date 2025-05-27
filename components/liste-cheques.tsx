@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input"
 
 function filtrerCheques(cheques: Cheque[], type: ChequeType, filtres: any): Cheque[] {
   // Log for debugging if needed:
-  console.log(filtres, "filtres")
 
   if (!filtres) return cheques.filter((cheque) => cheque.type === type)
 
@@ -45,11 +44,27 @@ export function ListeCheques({ type, cheques, filtres, onUpdateCheque }: ListeCh
   const [showOverdueOnly, setShowOverdueOnly] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const userContext = useContext(UserContext)
+  function chekOverdue(cheque: Cheque): boolean{
+    const now = new Date()
 
+    {
+      let chequeDate = new Date(cheque.date)
+     
+// For kimbielle type checks, use 7 days before now as overdue date
+if (cheque.typeDepapier === "kimbielle") {
+  const sevenDaysFromNow = new Date(cheque.date);
+  sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() - 7);
+  console.log(sevenDaysFromNow, "sevenDaysFromNow", cheque.amount)
+  chequeDate = sevenDaysFromNow;
+}
+      console.log( chequeDate < now)    
+      return ((chequeDate < now) && (cheque.status === "en-attente" || cheque.status==='a-deposer'))
+    }
+  }
   const chequesToDisplay = useMemo(() => {
     const now = new Date()
     const filtered = filtrerCheques(cheques, type, filtres)
-
+    
     const searched = searchQuery
       ? filtered.filter((cheque) =>
           Object.values(cheque).some(
@@ -58,10 +73,7 @@ export function ListeCheques({ type, cheques, filtres, onUpdateCheque }: ListeCh
         )
       : filtered
 
-    const overdue = searched.filter((cheque) => {
-      const chequeDate = new Date(cheque.date)
-      return chequeDate < now && cheque.status === "en-attente"
-    })
+    const overdue = searched.filter((cheque) => chekOverdue(cheque))
 
     return showOverdueOnly ? overdue : searched
   }, [cheques, type, filtres, showOverdueOnly, searchQuery])
@@ -114,7 +126,7 @@ export function ListeCheques({ type, cheques, filtres, onUpdateCheque }: ListeCh
             cheque={cheque}
             onUpdate={onUpdateCheque}
             viewMode={viewMode}
-            isOverdue={new Date(cheque.date) < new Date() && cheque.status === "en-attente"}
+            isOverdue={chekOverdue(cheque)}
           />
         ))}
       </div>
