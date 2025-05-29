@@ -166,7 +166,7 @@ export default function PaymentPage() {
           </Link>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Choisissez votre abonnement</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Accédez à toutes les fonctionnalités premium et optimisez la gestion de vos finances
+            Accédez à toutes les fonctionnalités et optimisez la gestion de vos finances
           </p>
         </div>
 
@@ -219,9 +219,7 @@ export default function PaymentPage() {
                 <ul className="space-y-3 mb-8 text-left">
                   {[
                     "Accès à toutes les fonctionnalités",
-                    "Gestion illimitée des chèques et traites",
-                    "Impression des traites",
-                    "Prédiction des échéances",
+      
                     "Support prioritaire",
                   ].map((feature, index) => (
                     <li key={index} className="flex items-start">
@@ -255,9 +253,6 @@ export default function PaymentPage() {
                 <ul className="space-y-3 mb-8 text-left">
                   {[
                     "Accès à toutes les fonctionnalités",
-                    "Gestion illimitée des chèques et traites",
-                    "Impression des traites",
-                    "Prédiction des échéances",
                     "Support prioritaire",
                     "Formation personnalisée",
                   ].map((feature, index) => (
@@ -314,41 +309,15 @@ export default function PaymentPage() {
                 <div className="flex items-center space-x-4 text-sm text-gray-600">
                   <span>Paiement sécurisé via</span>
                   <div className="flex items-center space-x-2">
-                    <Image src="/payment-provider-logo.svg" alt="Payment Provider" width={80} height={24} />
-                  </div>
+                    <p>konnect.network</p>
+                    </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Questions fréquentes</h3>
-          <div className="space-y-4">
-            {[
-              {
-                question: "Puis-je annuler mon abonnement à tout moment ?",
-                answer:
-                  "Oui, vous pouvez annuler votre abonnement à tout moment. Pour les abonnements mensuels, l'annulation prendra effet à la fin du mois en cours. Pour les abonnements annuels, vous pouvez demander un remboursement au prorata pour la période non utilisée.",
-              },
-              {
-                question: "Comment fonctionne la facturation ?",
-                answer:
-                  "Pour l'abonnement mensuel, vous serez facturé 35 DT chaque mois. Pour l'abonnement annuel, vous serez facturé 360 DT une fois par an, ce qui vous fait économiser l'équivalent de 2 mois d'abonnement.",
-              },
-              {
-                question: "Y a-t-il une période d'essai gratuite ?",
-                answer:
-                  "Oui, nous offrons une période d'essai gratuite de 14 jours pour tous les nouveaux utilisateurs. Vous pouvez tester toutes les fonctionnalités premium sans engagement.",
-              },
-            ].map((faq, index) => (
-              <div key={index} className="border-b border-gray-200 pb-4 last:border-0 last:pb-0">
-                <h4 className="text-base font-medium text-gray-900 mb-2">{faq.question}</h4>
-                <p className="text-gray-600">{faq.answer}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        
       </div>
     </div>
   )

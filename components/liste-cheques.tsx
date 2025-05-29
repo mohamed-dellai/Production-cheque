@@ -100,7 +100,7 @@ if (cheque.typeDepapier === "kimbielle") {
           className="flex items-center"
         >
           <AlertCircle className="mr-2 h-4 w-4" />
-          {showOverdueOnly ? "Tous les chèques" : "Chèques en retard"}
+          {showOverdueOnly ? "Afficher Tous" : "Afficher en retard"}
         </Button>
         <Button variant="outline" size="icon" onClick={() => setViewMode(viewMode === "card" ? "list" : "card")}>
           {viewMode === "card" ? <List size={20} /> : <Grid size={20} />}
@@ -111,11 +111,11 @@ if (cheque.typeDepapier === "kimbielle") {
         .length > 0 && (
         <CustomAlert
           variant="destructive"
-          title="Chèques en retard"
+          title="en retard"
           description={`Il y a ${
             chequesToDisplay.filter((cheque) => new Date(cheque.date) < new Date() && cheque.status === "en-attente")
               .length
-          } chèque(s) en retard qui nécessite(nt) votre attention.`}
+          } Document(s) de paiement en retard qui nécessite(nt) votre attention.`}
         />
       )}
 

@@ -70,10 +70,10 @@ export async function getChequeInfo(path, prompt, clientOufour) {
             bondEchange: `You are tasked with extracting specific information from an image of a "Bon d'échange" (Bill of Exchange). The image contains the following details, and you must extract them accurately in JSON format:
 
             chequeNum: The cheque number located at the bottom of the document, which is usually more legible.
-            owner: The text written under the label "payer à l'ordre de."
+            owner: The text written under the label "payer à l'ordre de." bellow the amount written in text in the center of the document
             date (date d'echeance): The date written under the label "Échéance." be carefull there are date echance and date creation always choose date d'echeance it should be greater than the other date you will find the date in this format dd/mm/yyyy.
             amount: The numeric value representing the total amount written both in numbers and words.
-            BankName: The bank name written under the field "Nom et adresse du Tiré."
+            BankName: The bank name written under the field "Domiciliation" in the bottom right of the document
             Return the extracted information in this exact JSON format:
 
             {

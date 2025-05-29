@@ -18,6 +18,7 @@ interface BonDeCommandeData {
   montantEnLettre: string
   montant: string
   lieu: string
+  nomEtAdresse: string
 }
 
 const initialFormData: BonDeCommandeData = {
@@ -25,49 +26,30 @@ const initialFormData: BonDeCommandeData = {
   documentNumber: "",
   payeALordreDe: "",
   bankName: "",
-  dateDeCreation: "",
+  dateDeCreation: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' }),
   bankRIB: "",
   montantEnLettre: "",
   montant: "",
-  lieu: "Tunis"
+  lieu: "Tunis",
+  nomEtAdresse: ""
 }
 
 const Print: React.FC = () => {
   const [formData, setFormData] = useState<BonDeCommandeData>(initialFormData)
-  const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})  
+  const [suggestions, setSuggestions] = useState<BonDeCommandeData[]>([])
   const [rib, setRib] = useState<string>("")
   const [bankName, setBankName] = useState<string>("")
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    let error = ""
-
-    if (name === "echeance" || name === "dateDeCreation") {
-      const datePattern = /^\d{2}\/\d{2}\/\d{2}$/
-      if (!datePattern.test(value)) {
-        error = "Date must be in dd/mm/yy format"
-      }
-    } else if (name === "bankRIB") {
-      if (value.length !== 20) {
-        error = "RIB must be 20 digits"
-      }
-    } else if (name === "montant") {
-      if (isNaN(Number(value))) {
-        error = "Montant must be a number"
-      } else {
-        setFormData((prevState) => ({
-          ...prevState,
-          montantEnLettre: convertAmountToFrench(Number(value)),
-        }))
-      }
-    } else if (value.trim() === "") {
-      error = "This field cannot be empty"
+    
+    if (name === "montant" && !isNaN(Number(value))) {
+      setFormData((prevState) => ({
+        ...prevState,
+        montantEnLettre: convertAmountToFrench(Number(value)),
+      }))
     }
-
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: error,
-    }))
 
     setFormData((prevState) => ({
       ...prevState,
@@ -76,7 +58,31 @@ const Print: React.FC = () => {
   }
 
   const handlePrint = () => {
-    window.print()
+    
+    // Save form data to localStorage
+    const fieldsToSave = {
+      payeALordreDe: formData.payeALordreDe,
+      bankName: formData.bankName,
+      bankRIB: formData.bankRIB,
+      lieu: formData.lieu,
+      nomEtAdresse: formData.nomEtAdresse
+    };
+    
+    // Check if this entry already exists
+    let savedData = localStorage.getItem('savedFormData') ? 
+      JSON.parse(localStorage.getItem('savedFormData') || '[]') : [];
+    
+    // Only add if payeALordreDe doesn't already exist
+    const exists = savedData.some((item: any) => 
+      item.payeALordreDe === fieldsToSave.payeALordreDe);
+    
+    if (!exists) {
+      savedData = [fieldsToSave, ...savedData].slice(0, 10); // Keep only the 10 most recent entries
+      localStorage.setItem('savedFormData', JSON.stringify(savedData));
+      setSuggestions(savedData);
+    }
+    
+    window.print();
   }
 
   useEffect(() => {
@@ -87,6 +93,17 @@ const Print: React.FC = () => {
       setBankName(getInfo.data.bank)
     }
     getInfo()
+    
+    // Load saved form data from localStorage
+    const savedFormData = localStorage.getItem('savedFormData')
+    if (savedFormData) {
+      try {
+        const parsedData = JSON.parse(savedFormData)
+        setSuggestions(parsedData)
+      } catch (error) {
+        console.error('Error parsing saved form data:', error)
+      }
+    }
   }, [])
 
   useEffect(() => {
@@ -104,15 +121,56 @@ const Print: React.FC = () => {
           <label htmlFor="payeALordreDe" className="block text-sm font-medium text-gray-700">
             Payé à l'ordre de
           </label>
-          <input
-            type="text"
-            id="payeALordreDe"
-            name="payeALordreDe"
-            value={formData.payeALordreDe}
-            onChange={handleInputChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            autoComplete="name"
-          />
+          <div className="relative">
+            <input
+              type="text"
+              id="payeALordreDe"
+              name="payeALordreDe"
+              value={formData.payeALordreDe}
+              onChange={(e) => {
+                handleInputChange(e);
+                // Filter suggestions based on input
+                if (e.target.value) {
+                  const filtered = suggestions.filter(item => 
+                    item.payeALordreDe.toLowerCase().includes(e.target.value.toLowerCase()));
+                  setSuggestions(filtered.length > 0 ? filtered : suggestions);
+                }
+              }}
+              onFocus={() => {
+                // Show all saved suggestions when field is focused
+                const savedData = localStorage.getItem('savedFormData');
+                if (savedData) {
+                  setSuggestions(JSON.parse(savedData));
+                }
+              }}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              autoComplete="off"
+            />
+            {formData.payeALordreDe && suggestions.length > 0 && (
+              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                {suggestions.map((suggestion, index) => (
+                  <div 
+                    key={index}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => {
+                      setFormData(prevState => ({
+                        ...prevState,
+                        payeALordreDe: suggestion.payeALordreDe,
+                        bankName: suggestion.bankName || prevState.bankName,
+                        bankRIB: suggestion.bankRIB || prevState.bankRIB,
+                        lieu: suggestion.lieu || prevState.lieu,
+                        nomEtAdresse: suggestion.nomEtAdresse || prevState.nomEtAdresse
+                      }));
+                      // Hide suggestions after selection
+                      setSuggestions([]);
+                    }}
+                  >
+                    {suggestion.payeALordreDe}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           {errors.payeALordreDe && <p className="text-red-500 text-sm">{errors.payeALordreDe}</p>}
         </div>
         <div className="space-y-2">
@@ -223,6 +281,26 @@ const Print: React.FC = () => {
           />
           {errors.montantEnLettre && <p className="text-red-500 text-sm">{errors.montantEnLettre}</p>}
         </div>
+        <div className="space-y-2">
+          <label htmlFor="nomEtAdresse" className="block text-sm font-medium text-gray-700">
+            Nom et Adresse
+          </label>
+          <textarea
+            id="nomEtAdresse"
+            name="nomEtAdresse"
+            value={formData.nomEtAdresse}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+              setFormData((prevState) => ({
+                ...prevState,
+                [e.target.name]: e.target.value,
+              }))
+            }}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            autoComplete="off"
+            rows={3} // Adjust the number of rows as needed
+          />
+          {errors.nomEtAdresse && <p className="text-red-500 text-sm">{errors.nomEtAdresse}</p>}
+        </div>
       </div>
     )
   }
@@ -235,7 +313,7 @@ const Print: React.FC = () => {
       </Link>
       <div className="bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="p-6">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">Imprimer Bon d'Echange</h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">Imprimer Triate</h2>
           <p className="text-gray-600 mb-6">Remplissez les informations</p>
           <div className="mb-6">{renderForm()}</div>
           <button
@@ -250,41 +328,41 @@ const Print: React.FC = () => {
 
       <div className="mt-8 print-visible bg-gray-50">
         <div className="w-[210mm] h-[297mm] bg-white relative overflow-hidden" style={{fontWeight: "bold"}}>
-          <div style={{ position: "absolute", top: "37mm", left: "63mm" }}>
+          <div style={{ position: "absolute", top: "37mm", left: "70mm" }}>
             {formData.payeALordreDe}
           </div>
 
-          <div style={{ position: "absolute", top: "53mm", left: "78mm" }}>{formData.echeance}</div>
+          <div style={{ position: "absolute", top: "53mm", left: "80mm" }}>{formData.echeance}</div>
           <div style={{ position: "absolute", top: "9mm", left: "80mm" }}>{formData.echeance}</div>
 
           <div style={{ position: "absolute", top: "10mm", left: "114mm" }}>
             {formData.dateDeCreation}
           </div>
-          <div style={{ position: "absolute", top: "53mm", left: "50mm" }}>
+          <div style={{ position: "absolute", top: "53mm", left: "53mm" }}>
             {formData.dateDeCreation}
           </div>
-          <div style={{ position: "absolute", top: "67mm", left: "148mm" }}>{formData.bankName}</div>
+          <div style={{ position: "absolute", top: "67mm", left: "150mm" }}>{formData.bankName}</div>
 
-          <div style={{ position: "absolute", top: "18mm", left: "68mm" }}>{formData.bankRIB.substring(0,2)}</div>
-          <div style={{ position: "absolute", top: "18mm", left: "82mm" }}>{formData.bankRIB.substring(2,5)}</div>
-          <div style={{ position: "absolute", top: "18mm", left: "95mm" }}>{formData.bankRIB.substring(5,18)}</div>
-          <div style={{ position: "absolute", top: "18mm", left: "138mm" }}>{formData.bankRIB.substring(18,20)}</div>
+          <div style={{ position: "absolute", top: "18mm", left: "70mm" }}>{formData.bankRIB.substring(0,2)}</div>
+          <div style={{ position: "absolute", top: "18mm", left: "84mm" }}>{formData.bankRIB.substring(2,5)}</div>
+          <div style={{ position: "absolute", top: "18mm", left: "97mm" }}>{formData.bankRIB.substring(5,18)}</div>
+          <div style={{ position: "absolute", top: "18mm", left: "140mm" }}>{formData.bankRIB.substring(18,20)}</div>
 
 
-          <div style={{ position: "absolute", top: "63mm", left: "22mm" }}>{formData.bankRIB.substring(0,2)}</div>
-          <div style={{ position: "absolute", top: "63mm", left: "28mm" }}>{formData.bankRIB.substring(2,5)}</div>
-          <div style={{ position: "absolute", top: "64mm", left: "43mm" }}>{formData.bankRIB.substring(5,18)}</div>
-          <div style={{ position: "absolute", top: "63mm", left: "88mm" }}>{formData.bankRIB.substring(18,20)}</div>
+          <div style={{ position: "absolute", top: "63mm", left: "26mm" }}>{formData.bankRIB.substring(0,2)}</div>
+          <div style={{ position: "absolute", top: "63mm", left: "36mm" }}>{formData.bankRIB.substring(2,5)}</div>
+          <div style={{ position: "absolute", top: "63mm", left: "47mm" }}>{formData.bankRIB.substring(5,18)}</div>
+          <div style={{ position: "absolute", top: "63mm", left: "90mm" }}>{formData.bankRIB.substring(18,20)}</div>
 
           <div style={{ position: "absolute", top: "19mm", left: "163mm" }}> # {formData.montant} #</div>
-          <div style={{ position: "absolute", top: "34mm", left: "163mm" }}># {formData.montant} #</div>
-
-          <div style={{ position: "absolute", top: "42mm", left: "33mm" }}>
+          <div style={{ position: "absolute", top: "33mm", left: "163mm" }}># {formData.montant} #</div>
+          
+          <div style={{ position: "absolute", top: "42mm", left: "35mm" }}>
             {formData.montantEnLettre}
           </div>
-          <div style={{ position: "absolute", top: "53mm", left: "33mm" }}>{formData.lieu}</div>
-          <div style={{ position: "absolute", top: "5mm", left: "118mm" }}>{formData.lieu}</div>
-
+          <div style={{ position: "absolute", top: "53mm", left: "35mm" }}>{formData.lieu}</div>
+          <div style={{ position: "absolute", top: "5mm", left: "120mm" }}>{formData.lieu}</div>
+           <div style={{ position: "absolute", top: "69mm", left: "105mm" }} className="text-sm mb-2" dangerouslySetInnerHTML={{ __html: formData.nomEtAdresse.replace(/\n/g, '<br />') }}></div>
         </div>
       </div>
     </div>
