@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { ArrowRight, CheckCircle, DollarSign, PieChart, Shield, Printer, Calculator, Bell, Menu, X } from "lucide-react"
+import { ArrowRight, CheckCircle, DollarSign, PieChart, Users, Printer, Calculator, Bell, Menu, X } from "lucide-react"
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -27,8 +27,7 @@ export default function LandingPage() {
       <header className={`fixed w-full z-50 transition-all duration-300 ${scrollY > 50 ? "bg-white shadow-md" : ""}`}>
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center">
-            <Image src="/logo.png" alt="GCT Logo" width={40} height={40} className="rounded-full" />
-            <span className="ml-2 text-2xl font-bold text-indigo-600">GCT</span>
+            <span className="ml-2 text-2xl font-bold text-indigo-600">FinFlow</span>
           </div>
           <nav className="hidden md:block">
             <ul className="flex space-x-8">
@@ -72,10 +71,10 @@ export default function LandingPage() {
       </header>
 
       <main>
-        <section className="relative min-h-screen flex items-center bg-gradient-to-br from-indigo-50 to-white">
+        <section className="relative min-h-screen flex items-center bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-100">
           <div className="absolute inset-0 overflow-hidden">
-            <Image src="/hero-background.jpg" alt="Background" layout="fill" objectFit="cover" quality={100} priority />
-            <div className="absolute inset-0 bg-white/75 backdrop-blur-sm"></div>
+            <Image src="/hero-background.jpg" alt="Background" layout="fill" objectFit="cover" quality={80} priority className="opacity-30" />
+            <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-white/30 to-transparent"></div>
           </div>
           <div className="container mx-auto px-4 py-20 text-center relative z-10">
             <motion.h1
@@ -84,7 +83,7 @@ export default function LandingPage() {
               transition={{ duration: 0.8 }}
               className="text-5xl md:text-7xl font-bold mb-6 text-indigo-600"
             >
-              Gestion financière intelligente
+              Gestion des traites et cheques 
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -92,8 +91,8 @@ export default function LandingPage() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-xl md:text-2xl text-gray-800 mb-8 max-w-3xl mx-auto"
             >
-              Optimisez la gestion de vos chèques, traites et paiements en espèces avec notre solution innovante, conçue
-              spécialement pour les entreprises tunisiennes modernes.
+              Optimisez la gestion de vos chèques, traites avec notre solution innovante, conçue
+              spécialement pour les entreprises tunisiennes.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -108,18 +107,34 @@ export default function LandingPage() {
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Link>
             </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="mt-8 flex justify-center items-center space-x-4 text-gray-700"
+            >
+              <span className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-5 w-5"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                Web
+              </span>
+              <span className="text-gray-400">|</span>
+              <span className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-5 w-5"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                Mobile
+              </span>
+            </motion.div>
           </div>
         </section>
 
         <section id="features" className="py-20 bg-gray-50">
           <div className="container mx-auto px-4">
-            <h2 className="text-4xl font-bold text-center mb-16 text-indigo-600">Fonctionnalités révolutionnaires</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-center mb-20 text-black">Fonctionnalités Clés pour Transformer Votre Gestion</h2>
             <div className="grid md:grid-cols-3 gap-12">
               {[
                 {
                   icon: DollarSign,
                   title: "Gestion complète",
-                  description: "Gérez efficacement vos chèques, traites et paiements en espèces en un seul endroit.",
+                  description: "Gérez efficacement vos chèques, traites en un seul endroit.",
                 },
                 {
                   icon: Printer,
@@ -133,7 +148,7 @@ export default function LandingPage() {
                 },
                 {
                   icon: Calculator,
-                  title: "Prédiction et analyse de risque",
+                  title: "Remplissage auto des information de triate ou cheque",
                   description: "Déterminez les meilleures échéances et évaluez les risques de paiement.",
                 },
                 {
@@ -142,19 +157,22 @@ export default function LandingPage() {
                   description: "Recevez des alertes pour les chèques et traites non payés à temps.",
                 },
                 {
-                  icon: Shield,
-                  title: "Sécurité de niveau bancaire",
-                  description: "Protégez vos données financières avec notre système de sécurité ultra-robuste.",
+                  icon: Users,
+                  title: "Gestion multi-utilisateurs",
+                  description: "Gérez facilement plusieurs comptes utilisateurs avec différents rôles (administrateurs et utilisateurs standards)."
                 },
+             
               ].map((feature, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition duration-300"
+                  className="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
                 >
-                  <feature.icon size={48} className="text-indigo-600 mb-4" />
+                  <div className="p-3 bg-indigo-100 rounded-full inline-block mb-4">
+                    <feature.icon size={32} className="text-indigo-600" />
+                  </div>
                   <h3 className="text-xl font-semibold mb-2 text-gray-800">{feature.title}</h3>
                   <p className="text-gray-600">{feature.description}</p>
                 </motion.div>
@@ -162,10 +180,155 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
+        <section id="risk-calculator" className="py-20 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-center mb-20 text-black">Remplissage Automatique: Gagnez du Temps</h2>
+            <div className="flex flex-col md:flex-row-reverse items-center justify-between">
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="md:w-1/2 mb-8 md:mb-0"
+              >
+                <video
+                  src="/0530.mp4"
+                  controls
+                  autoPlay
+                  loop
+                  muted
+                  className="rounded-lg shadow-xl w-full max-w-2xl h-auto max-h-[70vh] mx-auto"
+                />
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="md:w-1/2 md:pr-8"
+              >
+                <h3 className="text-2xl font-semibold mb-4 text-gray-800">
+                  Reconnaissance automatique des informations
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Prenez une photo d’un chèque ou d’une traite, et notre système intelligent extrait automatiquement toutes les données nécessaires pour un enregistrement rapide et sans erreur.
+              </p>
+              <ul className="space-y-2">
+                {[
+                  "Capture photo directement depuis l’application",
+                  "Lecture automatique des informations du chèque ou de la traite",
+                  "Remplissage instantané du formulaire de saisie",
+                  "Gain de temps et réduction des erreurs",
+                ].map((item, index) => (
+                  <li key={index} className="flex items-center text-gray-600">
+                    <CheckCircle className="text-green-500 mr-2" size={20} />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              </motion.div>
+              </div>
+              </div>
+              </section>
+
+      <section id="dashboard" className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-20 text-black">Suivi des Statuts en Temps Réel</h2>
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="md:w-1/2 mb-8 md:mb-0"
+            >
+              <Image
+                src="/image-traite.png"
+                alt="Démonstration du suivi des statuts"
+                width={500}
+                height={300}
+                className="rounded-lg shadow-xl object-contain h-auto max-h-[70vh] mx-auto"
+              />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="md:w-1/2 md:pl-8"
+            >
+              <h3 className="text-2xl font-semibold mb-4 text-gray-800">
+                Gardez le contrôle sur chaque étape
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Suivez facilement l’évolution de chaque chèque ou traite grâce à notre système de statuts clairs et mis à jour en temps réel.
+              </p>
+              <ul className="space-y-2">
+                {[
+                  "Statut 'à déposer' pour les paiements préparés",
+                  "Suivi 'en attente' pour les opérations en cours",
+                  "Indicateur 'rejeté' pour les refus bancaires",
+                  "Confirmation 'encaissé' dès réception des fonds",
+                ].map((item, index) => (
+                  <li key={index} className="flex items-center text-gray-600">
+                    <CheckCircle className="text-green-500 mr-2" size={20} />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+      
+        <section id="dashboard" className="py-20 bg-white">
+          <div className="container mx-auto px-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-center mb-20 text-black">Tableau de Bord Intuitif et Complet</h2>
+            <div className="flex flex-col md:flex-row items-center justify-between">
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="md:w-1/2 mb-8 md:mb-0"
+              >
+                <Image
+                  src="/dashboard-demo.png"
+                  alt="Démonstration du tableau de bord"
+                  width={500}
+                  height={300}
+                  className="rounded-lg shadow-xl object-contain h-auto max-h-[70vh] mx-auto"
+                />
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="md:w-1/2 md:pl-8"
+              >
+                <h3 className="text-2xl font-semibold mb-4 text-gray-800">
+                  Visualisez vos données financières en un coup d'œil
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Notre tableau de bord simple et efficace vous offre une vue d'ensemble de votre situation financière
+                  avec des graphiques clairs et des indicateurs pertinents.
+                </p>
+                <ul className="space-y-2">
+                  {[
+                    "Vue d'ensemble des chèques et traites",
+                    "Graphiques de flux de trésorerie",
+                    "Indicateurs de performance clés",
+                    "Alertes et notifications intégrées",
+                  ].map((item, index) => (
+                    <li key={index} className="flex items-center text-gray-600">
+                      <CheckCircle className="text-green-500 mr-2" size={20} />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            </div>
+          </div>
+        </section> 
 
         <section id="print-demo" className="py-20 bg-white">
           <div className="container mx-auto px-4">
-            <h2 className="text-4xl font-bold text-center mb-16 text-indigo-600">Impression des traites simplifiée</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-center mb-20 text-black">Impression des Traites Simplifiée et Rapide</h2>
             <div className="flex flex-col md:flex-row items-center justify-between">
               <motion.div
                 initial={{ opacity: 0, x: -50 }}
@@ -176,9 +339,9 @@ export default function LandingPage() {
                 <Image
                   src="/print-demo.png"
                   alt="Démonstration d'impression de traites"
-                  width={600}
-                  height={400}
-                  className="rounded-lg shadow-lg"
+                  width={500}
+                  height={300}
+                  className="rounded-lg shadow-xl object-contain h-auto max-h-[70vh] mx-auto"
                 />
               </motion.div>
               <motion.div
@@ -211,174 +374,113 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="risk-calculator" className="py-20 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <h2 className="text-4xl font-bold text-center mb-16 text-indigo-600">Prédiction et analyse de risque</h2>
-            <div className="flex flex-col md:flex-row-reverse items-center justify-between">
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="md:w-1/2 mb-8 md:mb-0"
-              >
-                <Image
-                  src="/risk-calculator.png"
-                  alt="Calculateur de risque"
-                  width={600}
-                  height={400}
-                  className="rounded-lg shadow-lg"
-                />
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="md:w-1/2 md:pr-8"
-              >
-                <h3 className="text-2xl font-semibold mb-4 text-gray-800">
-                  Optimisez vos échéances et minimisez les risques
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Notre système intelligent analyse vos données financières pour vous aider à choisir les meilleures
-                  semaines pour vos échéances et évalue le risque associé à chaque transaction.
-                </p>
-                <ul className="space-y-2">
-                  {[
-                    "Prédiction des meilleures semaines pour les échéances",
-                    "Calcul du risque de paiement",
-                    "Recommandations personnalisées",
-                    "Analyse des tendances de paiement",
-                  ].map((item, index) => (
-                    <li key={index} className="flex items-center text-gray-600">
-                      <CheckCircle className="text-green-500 mr-2" size={20} />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            </div>
-          </div>
-        </section>
+        
+  <section id="dashboard" className="py-20 bg-white">
+  <div className="container mx-auto px-4">
+    <h2 className="text-4xl md:text-5xl font-bold text-center mb-20 text-black">Notifications Intelligentes</h2>
+    <div className="flex flex-col md:flex-row-reverse items-center justify-between">
+      <motion.div
+        initial={{ opacity: 0, x: -50 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5 }}
+        className="md:w-1/2 mb-8 md:mb-0"
+      >
+        <Image
+          src="/notification-demo.png"
+          alt="Démonstration des notifications"
+          width={500}
+          height={300}
+          className="rounded-lg shadow-xl object-contain h-auto max-h-[70vh] mx-auto"
+        />
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, x: 50 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5 }}
+        className="md:w-1/2 md:pl-8"
+      >
+        <h3 className="text-2xl font-semibold mb-4 text-gray-800">
+          Restez informé à tout moment
+        </h3>
+        <p className="text-gray-600 mb-6">
+          Notre système de notifications vous alerte automatiquement pour ne jamais rater une échéance.
+        </p>
+        <ul className="space-y-2">
+          {[
+            "Alertes pour les traites ou chèques en retard",
+            "Rappels pour les dépôts à venir"
+          ].map((item, index) => (
+            <li key={index} className="flex items-center text-gray-600">
+              <CheckCircle className="text-green-500 mr-2" size={20} />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </motion.div>
+    </div>
+  </div>
+</section>
 
-        <section id="dashboard" className="py-20 bg-white">
-          <div className="container mx-auto px-4">
-            <h2 className="text-4xl font-bold text-center mb-16 text-indigo-600">Tableau de bord intuitif</h2>
-            <div className="flex flex-col md:flex-row items-center justify-between">
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="md:w-1/2 mb-8 md:mb-0"
-              >
-                <Image
-                  src="/dashboard-demo.png"
-                  alt="Démonstration du tableau de bord"
-                  width={600}
-                  height={400}
-                  className="rounded-lg shadow-lg"
-                />
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="md:w-1/2 md:pl-8"
-              >
-                <h3 className="text-2xl font-semibold mb-4 text-gray-800">
-                  Visualisez vos données financières en un coup d'œil
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Notre tableau de bord simple et efficace vous offre une vue d'ensemble de votre situation financière
-                  avec des graphiques clairs et des indicateurs pertinents.
-                </p>
-                <ul className="space-y-2">
-                  {[
-                    "Vue d'ensemble des chèques et traites",
-                    "Graphiques de flux de trésorerie",
-                    "Indicateurs de performance clés",
-                    "Alertes et notifications intégrées",
-                  ].map((item, index) => (
-                    <li key={index} className="flex items-center text-gray-600">
-                      <CheckCircle className="text-green-500 mr-2" size={20} />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            </div>
-          </div>
-        </section>
 
-        <section id="testimonials" className="py-20 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <h2 className="text-4xl font-bold text-center mb-16 text-indigo-600">Ce que disent nos clients</h2>
-            <div className="grid md:grid-cols-2 gap-8">
-              {[
-                {
-                  name: "Ahmed B.",
-                  role: "Directeur financier",
-                  quote:
-                    "Cette application a transformé notre gestion financière. Nous économisons des heures chaque semaine sur la gestion des chèques et des traites.",
-                },
-                {
-                  name: "Sonia M.",
-                  role: "Entrepreneur",
-                  quote:
-                    "Intuitive et puissante. La fonctionnalité de prédiction des échéances nous a permis d'optimiser notre trésorerie de manière significative.",
-                },
-              ].map((testimonial, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5 }}
-                  className="bg-white p-8 rounded-xl shadow-md"
-                >
-                  <p className="text-lg mb-4 italic text-gray-600">"{testimonial.quote}"</p>
-                  <div className="flex items-center">
-                    <div className="w-12 h-12 bg-indigo-600 rounded-full mr-4"></div>
-                    <div>
-                      <p className="font-semibold text-gray-800">{testimonial.name}</p>
-                      <p className="text-gray-600">{testimonial.role}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+
+      <section id="multi-accounts" className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-20 text-black">Gestion Multi-Comptes Centralisée</h2>
+          <div className="flex flex-col md:flex-row-reverse items-center justify-between">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="md:w-1/2 mb-8 md:mb-0"
+            >
+              <Image
+                src="/multi.png"
+                alt="Gestion Multi-Comptes"
+                width={500}
+                height={300}
+                className="rounded-lg shadow-xl object-contain h-auto max-h-[70vh] mx-auto"
+              />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="md:w-1/2 md:pl-8"
+            >
+              <h3 className="text-2xl font-semibold mb-4 text-gray-800">
+                Gérez plusieurs comptes en toute simplicité
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Notre application vous permet de gérer plusieurs comptes au sein d'une seule interface.
+              </p>
+              <ul className="space-y-2">
+                {[
+                  "Ajoutez un nombre illimité de comptes",
+                  "Suivez les activité de chaque compte"
+ 
+                ].map((item, index) => (
+                  <li key={index} className="flex items-center text-gray-600">
+                    <CheckCircle className="text-green-500 mr-2" size={20} />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
           </div>
-        </section>
+        </div>
+      </section>
 
         <section id="pricing" className="py-20 bg-white">
           <div className="container mx-auto px-4">
-            <h2 className="text-4xl font-bold text-center mb-16 text-indigo-600">Choisissez votre plan</h2>
-            <div className="grid md:grid-cols-3 gap-8">
+            <h2 className="text-4xl md:text-5xl font-bold text-center mb-20 text-black">Prêt à Simplifier Votre Gestion?</h2>
+            <div>
               {[
                 {
-                  name: "Starter",
-                  price: "Gratuit",
+                  name: "Essai Gratuit",
+                  price: "7 jours gratuits",
                   features: [
-                    "Jusqu'à 50 chèques/mois",
-                    "Gestion des traites basique",
-                    "Tableau de bord simple",
-                    "Support par email",
+                    "Toutes les fonctionnality inclus",
                   ],
-                },
-                {
-                  name: "Pro",
-                  price: "99 DT/mois",
-                  features: [
-                    "Chèques et traites illimités",
-                    "Impression des traites",
-                    "Prédiction des échéances",
-                    "Analyse de risque avancée",
-                    "Support prioritaire",
-                  ],
-                  highlight: true,
-                },
-                {
-                  name: "Entreprise",
-                  price: "Sur mesure",
-                  features: ["Solutions personnalisées", "Intégration complète", "Formation dédiée", "Support 24/7"],
                 },
               ].map((plan, index) => (
                 <motion.div
@@ -386,25 +488,25 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className={`${
-                    plan.highlight ? "bg-indigo-600 text-white transform scale-105" : "bg-gray-50 text-gray-800"
-                  } p-8 rounded-xl shadow-lg transition duration-300`}
+                  className={`${ 
+"bg-gradient-to-br from-indigo-500 to-purple-600 text-white"
+                  } p-10 rounded-xl shadow-2xl transition-all duration-300 transform hover:scale-105 max-w-md mx-auto`}
                 >
                   <h3 className="text-2xl font-bold mb-4">{plan.name}</h3>
-                  <p className="text-4xl font-bold mb-6">{plan.price}</p>
+                  <p className="text-5xl font-bold mb-6">{plan.price}</p>
                   <ul className="mb-8 space-y-2">
                     {plan.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-center">
-                        <CheckCircle className={`${plan.highlight ? "text-white" : "text-green-500"} mr-2`} size={20} />
+                        <CheckCircle className="text-green-500 mr-2" size={20} />
                         <span>{feature}</span>
                       </li>
                     ))}
                   </ul>
                   <Link
                     href={plan.name === "Entreprise" ? "/contact" : "/signup"}
-                    className={`block text-center ${
-                      plan.highlight ? "bg-white text-indigo-600" : "bg-indigo-600 text-white"
-                    } px-6 py-3 rounded-full font-semibold hover:opacity-90 transition duration-300`}
+                    className={`block text-center ${ 
+"bg-white text-indigo-600"
+                    } px-10 py-4 rounded-full font-semibold hover:bg-gray-100 transition duration-300 text-xl shadow-md hover:shadow-lg`}
                   >
                     {plan.name === "Entreprise" ? "Contactez-nous" : "Commencer"}
                   </Link>
@@ -430,6 +532,22 @@ export default function LandingPage() {
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Link>
             </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="mt-8 flex justify-center items-center space-x-4 text-gray-700"
+            >
+              <span className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-5 w-5"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                Web
+              </span>
+              <span className="text-gray-400">|</span>
+              <span className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-5 w-5"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                Mobile
+              </span>
+            </motion.div>
           </div>
         </section>
       </main>
@@ -440,8 +558,8 @@ export default function LandingPage() {
             <div>
               <h4 className="text-lg font-semibold mb-4 text-indigo-600">À propos</h4>
               <p className="text-sm">
-                GCT est votre solution complète pour une gestion financière innovante et sécurisée, adaptée aux besoins
-                des entreprises tunisiennes modernes.
+                FINFLOW est votre solution complète pour une gestion financière innovante et sécurisée, adaptée aux besoins
+                des entreprises tunisiennes.
               </p>
             </div>
             <div>
@@ -504,9 +622,19 @@ export default function LandingPage() {
                 </li>
               </ul>
             </div>
+            <div>
+              <h4 className="text-lg font-semibold mb-4 text-indigo-600">Contact</h4>
+              <ul className="text-sm space-y-2">
+                <li>
+                  <a href="tel:+21620201133" className="hover:text-indigo-600 transition duration-300">
+                    +216 20 201 133
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
           <div className="mt-12 pt-8 border-t border-gray-200 text-center text-sm">
-            <p>&copy; 2023 Gestionnaire de Chèques Tunisien. Tous droits réservés.</p>
+            <p>&copy; 2024 FinFlow. Tous droits réservés.</p>
           </div>
         </div>
       </footer>
