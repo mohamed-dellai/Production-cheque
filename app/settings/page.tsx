@@ -408,7 +408,7 @@ export default function OrganizationSettings() {
 
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-blue-600">Paramètres de l'Organisation</h1>
+          <h1 className="text-3xl font-bold">Paramètres de l'Organisation</h1>
           <p className="text-gray-500 mt-2">Gérez les comptes utilisateurs et les paramètres de votre organisation</p>
         </div>
 

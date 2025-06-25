@@ -214,7 +214,7 @@ export async function GET(request: NextRequest) {
 }
 
 async function fetchPaymentDetails(paymentRef: string) {
-  const apiUrl = 'https://api.sandbox.konnect.network/api/v2';
+  const apiUrl = 'https://api.konnect.network/api/v2';
   const apiKey = process.env.KONNECT_API_KEY;
 
   if (!apiKey) {

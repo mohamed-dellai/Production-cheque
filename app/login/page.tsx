@@ -49,9 +49,9 @@ export default function LoginPage() {
         setEmail('');
         window.location.href = '/'; 
       }
-    } catch (error) {
-      setError('Login failed'); 
-      console.error('Login failed:', error);
+    } catch (error: any) {
+      setError(error.response.data.error); 
+      console.error('Login failed:');
     }
     setIsLoading(false);
   };

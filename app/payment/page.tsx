@@ -33,54 +33,32 @@ export default function PaymentPage() {
 
   const handleProceedToPayment = async () => {
     setIsRedirecting(true);
-
     try {
-      const konnectResponse = await fetch('https://api.sandbox.konnect.network/api/v2/payments/init-payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': '67cff9f7c4277886850ba2f2:nBbCayuzbPzLLE9aq',
-        },
-        body: JSON.stringify({
-          receiverWalletId: "67cff9f7c4277886850ba2f8",
-          token: 'TND',
-          webhook: `https://finflowtn.vercel.app/api/payment/receivePaymentStatus`,  
-          amount: selectedPlan === 'monthly' ? 24000 : 240000,
-          type: 'immediate',
-          description: `Abonnement ${selectedPlan === 'monthly' ? 'mensuel' : 'annuel'} - Cheques Management`,
-          acceptedPaymentMethods: ['bank_card', 'e-DINAR'],
-          lifespan: 30,
-          checkoutForm: true,
-          addPaymentFeesToAmount: false,
-          orderId: `ORDER-${Date.now()}`,
-          successUrl: `${window.location.origin}/payment/success`,
-          failUrl: `${window.location.origin}/payment/failure`,
-          theme: 'light'
-        })
-      });
-      var konnectData = await konnectResponse.json();
-    }
-    catch(e){
-      console.error(e);
-    }
-    try{
-      
-      // Save payment details to our database
-      const { data: savePaymentResponse } = await axios.post('/api/payment/initPaymen', {
-        paymentRef: konnectData.paymentRef,
-        amount: selectedPlan === 'monthly' ? 24000 : 240000,
+      // Call the backend API to initiate payment
+      const response = await axios.post('/api/payment/initPayment', {
+        selectedPlan: selectedPlan,
       });
 
-      console.log(savePaymentResponse)
+      const { payUrl, paymentRef, paymentId } = response.data;
 
-      // Redirect to payment URL
-      window.location.href = konnectData.payUrl;
+      if (payUrl) {
+        // Optionally, you might want to store paymentRef or paymentId in local state or context
+        // if needed for UI updates before redirection or for reconciliation later.
+        console.log('Payment initiated. PaymentRef:', paymentRef, 'PaymentID:', paymentId);
+        // Redirect to payment URL provided by the backend
+        window.location.href = payUrl;
+      } else {
+        // Handle cases where payUrl might not be returned (e.g., error in backend)
+        console.error('Failed to get payment URL from backend.');
+        // TODO: Show an appropriate error message to the user
+        setIsRedirecting(false);
+      }
     } catch (error: any) {
-      console.error(error.stack);
+      console.error('Error proceeding to payment:', error.response?.data?.error || error.message);
+      // TODO: Show an appropriate error message to the user based on error.response.data.details or a generic message
       setIsRedirecting(false);
-      // Handle error - show error message to user
     }
-  }
+  };
 
   // Render subscription status section
   const renderSubscriptionStatus = () => {

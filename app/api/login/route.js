@@ -19,12 +19,12 @@ export async function POST(request) {
       });
     } catch (error) {
       console.log('Error:', error.stack)
-      return NextResponse.json({ error: 'Server error' }, { status: 500 });
+      return NextResponse.json({ error: 'erreur de serveur' }, { status: 500 });
     }
 
     try {
       if (!account) {
-        return NextResponse.json({ error: "Account not found" }, { status: 404 });
+        return NextResponse.json({ error: "compte not found" }, { status: 404 });
       }
 
       if (!account.verified) {
@@ -32,11 +32,11 @@ export async function POST(request) {
       }
 
       if (account.password !== password) {
-        return NextResponse.json({ error: "Invalid password" }, { status: 401 });
+        return NextResponse.json({ error: "Mot de pass incorrect" }, { status: 401 });
       }
 
       if (!account.user) {
-        return NextResponse.json({ error: "Associated user not found" }, { status: 500 });
+        return NextResponse.json({ error: "email introvable" }, { status: 500 });
       }
 
       // If FCM token is provided, update the account's fcmToken array

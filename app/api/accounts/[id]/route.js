@@ -30,7 +30,7 @@ export async function PUT(request, { params }) {
         email,
         ...(password && password.trim() !== "" ? { password } : {}),
         auth: isAdmin ? 1 : 0,
-        verified: TRUE,
+        verified: true,
       },
     });
 

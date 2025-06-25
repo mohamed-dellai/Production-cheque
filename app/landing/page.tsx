@@ -24,7 +24,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white text-gray-800">
-      <header className={`fixed w-full z-50 transition-all duration-300 ${scrollY > 50 ? "bg-white shadow-md" : ""}`}>
+      <header style={{maxWidth: "100vw"}}className={`fixed w-full z-50 transition-all duration-300 ${scrollY > 50 ? "bg-white shadow-md" : ""}`}>
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center">
             <span className="ml-2 text-2xl font-bold text-indigo-600">FinFlow</span>
@@ -70,10 +70,9 @@ export default function LandingPage() {
         )}
       </header>
 
-      <main>
+      <main style={{overflowX: "hidden"}} >
         <section className="relative min-h-screen flex items-center bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-100">
           <div className="absolute inset-0 overflow-hidden">
-            <Image src="/hero-background.jpg" alt="Background" layout="fill" objectFit="cover" quality={80} priority className="opacity-30" />
             <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-white/30 to-transparent"></div>
           </div>
           <div className="container mx-auto px-4 py-20 text-center relative z-10">
@@ -128,7 +127,7 @@ export default function LandingPage() {
 
         <section id="features" className="py-20 bg-gray-50">
           <div className="container mx-auto px-4">
-            <h2 className="text-4xl md:text-5xl font-bold text-center mb-20 text-black">Fonctionnalités Clés pour Transformer Votre Gestion</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-center mb-20 text-black">Fonctionnalités Clés</h2>
             <div className="grid md:grid-cols-3 gap-12">
               {[
                 {
@@ -149,7 +148,7 @@ export default function LandingPage() {
                 {
                   icon: Calculator,
                   title: "Remplissage auto des information de triate ou cheque",
-                  description: "Déterminez les meilleures échéances et évaluez les risques de paiement.",
+                  description: "Saisie intelligente par photo : Fini la saisie manuelle !",
                 },
                 {
                   icon: Bell,
@@ -473,7 +472,7 @@ export default function LandingPage() {
         <section id="pricing" className="py-20 bg-white">
           <div className="container mx-auto px-4">
             <h2 className="text-4xl md:text-5xl font-bold text-center mb-20 text-black">Prêt à Simplifier Votre Gestion?</h2>
-            <div>
+            <div style={{ display: "flex", justifyContent: "center", gap: "20px", flexWrap: "wrap" }} >
               {[
                 {
                   name: "Essai Gratuit",
@@ -482,12 +481,23 @@ export default function LandingPage() {
                     "Toutes les fonctionnality inclus",
                   ],
                 },
+                {
+                  name: "Après l'essai",
+                  price: "24 TND/mois",
+                  features: [
+                    "Toutes les fonctionnality inclus",
+
+                    
+                  ],
+                },
+
               ].map((plan, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
+                  style={{maxWidth: "400px"}}
                   className={`${ 
 "bg-gradient-to-br from-indigo-500 to-purple-600 text-white"
                   } p-10 rounded-xl shadow-2xl transition-all duration-300 transform hover:scale-105 max-w-md mx-auto`}
@@ -518,7 +528,7 @@ export default function LandingPage() {
 
         <section className="py-20 bg-indigo-600 text-white">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-4xl font-bold mb-8">Prêt à révolutionner votre gestion financière ?</h2>
+            <h2 className="text-4xl font-bold mb-8">Prêt à simplifier votre gestion financière ?</h2>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}

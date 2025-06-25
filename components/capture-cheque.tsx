@@ -61,7 +61,6 @@ export function CaptureCheque({ onCapture }: CaptureChequeProps) {
         axios.post("api/getInfo", { url: base64Data, type: typePapier, clientOufour: chequeType }),
         saveImageToFirebase(blob)
       ]);
-      console.log(result.data);
       if(result.data.date!==null)
       result.data.date.replace("-", "/");
       const newCheque: Omit<Cheque, 'id'> = {
