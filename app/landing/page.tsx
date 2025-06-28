@@ -18,7 +18,7 @@ export default function LandingPage() {
 
   const navItems = [
     { name: "Fonctionnalités", href: "#features" },
-    { name: "Témoignages", href: "#testimonials" },
+    { name: "connecter", href: "/login" },
     { name: "Tarifs", href: "#pricing" },
   ]
 
@@ -385,7 +385,7 @@ export default function LandingPage() {
         className="md:w-1/2 mb-8 md:mb-0"
       >
         <Image
-          src="/notification-demo.png"
+          src="/imagenotif.png"
           alt="Démonstration des notifications"
           width={500}
           height={300}
