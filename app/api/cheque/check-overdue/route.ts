@@ -5,107 +5,77 @@ import admin from '../../../../utils/firebaseAdmin';
 const prisma = new PrismaClient();
 
 export async function GET() {
-  const notificationResults: any[] = [];
   try {
     const now = new Date();
-
-    const usersWithOverdueCheques = await prisma.user.findMany({
+    // Find all cheques that are overdue (date < now and status != 'encaisse')
+    const overdueCheques = await prisma.cheque.findMany({
       where: {
-        account: {
-          some: {
-            cheques: {
-              some: {
-                date: { lt: now.toISOString() },
-                status: { not: 'encaisse' }
-              }
-            }
-          }
-        }
+        date: { lt: now },
+        status: { not: 'encaisse' }
       },
       select: {
         id: true,
-        email: true,
-        name: true,
-        account: {
-          where: {
-            cheques: {
-              some: {
-                date: { lt: now.toISOString() },
-                status: { not: 'encaisse' }
-              }
-            }
-          },
+        number: true,
+        amount: true,
+        date: true,
+        status: true,
+        user: {
           select: {
             id: true,
-            fcmToken: true,
-            cheques: {
-              where: {
-                date: { lt: now.toISOString() },
-                status: { not: 'encaisse' }
-              }
-            }
+            name: true,
+            email: true
+          }
+        },
+        account: {
+          select: {
+            fcmToken: true
           }
         }
       }
     });
 
-    const userNotifications = usersWithOverdueCheques.map(user => ({
-      userId: user.id,
-      email: user.email,
-      name: user.name,
-      fcmTokens: Array.from(new Set(
-        user.account.flatMap(account => account.fcmToken || [])
-      )),
-      overdueCount: user.account.reduce((sum, acc) => sum + acc.cheques.length, 0)
-    }));
-
-    for (const user of userNotifications) {
-      if (user.fcmTokens.length > 0) {
+    // Send notification for each cheque (if FCM tokens exist)
+    const notificationResults = [];
+    for (const cheque of overdueCheques) {
+      const tokens = cheque.account?.fcmToken || [];
+      if (tokens.length > 0) {
         const message = {
           data: {
             title: 'Rappel',
-            body: `Vous avez ${user.overdueCount} chèque(s) qui nécessite(nt) votre attention.`
+            body: `Chèque n°${cheque.number} de ${cheque.amount} DH est en retard.`
           },
-          tokens: user.fcmTokens
+          tokens
         };
-
         try {
           const res = await admin.messaging().sendEachForMulticast(message);
-          const successCount = res.successCount;
-          const failureCount = res.failureCount;
           notificationResults.push({
-            user: user.email,
-            tokens: user.fcmTokens.length,
-            sent: successCount,
-            failed: failureCount,
-            errors: res.responses.filter(r => !r.success).map(r => r.error?.message)
+            chequeId: cheque.id,
+            user: cheque.user?.email,
+            sent: res.successCount,
+            failed: res.failureCount
           });
-          console.log(`Notification sent to ${user.email}: ${successCount} success, ${failureCount} failed`);
         } catch (error) {
           notificationResults.push({
-            user: user.email,
-            tokens: user.fcmTokens.length,
+            chequeId: cheque.id,
+            user: cheque.user?.email,
             sent: 0,
-            failed: user.fcmTokens.length,
-            errors: [typeof error === 'object' && error !== null && 'message' in error ? (error as { message: string }).message : String(error)]
+            failed: tokens.length,
+            error: String(error)
           });
-          console.error(`Error sending notification to user ${user.email}:`, error);
         }
       } else {
         notificationResults.push({
-          user: user.email,
-          tokens: 0,
+          chequeId: cheque.id,
+          user: cheque.user?.email,
           sent: 0,
           failed: 0,
-          errors: ['No FCM tokens']
+          error: 'No FCM tokens'
         });
-        console.log(`No FCM tokens for user ${user.email}`);
       }
     }
 
-    return NextResponse.json({ notifications: notificationResults }, { status: 200 });
-  } catch (error: any) {
-    console.error('Error checking overdue cheques:', error.stack);
+    return NextResponse.json({ overdueCheques, notificationResults }, { status: 200 });
+  } catch (error) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   } finally {
     await prisma.$disconnect();
